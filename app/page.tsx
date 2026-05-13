@@ -73,7 +73,7 @@ export default function HomePage() {
       {/* 기능 카드 섹션 */}
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">포함된 기능</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">포함된 기능 모음</h2>
           <div className="grid gap-6 md:grid-cols-3">
             {features.map((feature) => (
               <Card key={feature.title} className="hover:shadow-md transition-shadow">
