@@ -29,11 +29,11 @@ async function getDashboardStats() {
 }
 
 const recentActivities = [
-  { user: "김민준", action: "새 계정 생성", time: "2분 전" },
-  { user: "이서연", action: "주문 완료 #1024", time: "15분 전" },
-  { user: "박지훈", action: "비밀번호 변경", time: "1시간 전" },
-  { user: "최수아", action: "프로필 수정", time: "2시간 전" },
-  { user: "정도윤", action: "로그인", time: "3시간 전" },
+  { id: "act-1", user: "김민준", action: "새 계정 생성", time: "2분 전" },
+  { id: "act-2", user: "이서연", action: "주문 완료 #1024", time: "15분 전" },
+  { id: "act-3", user: "박지훈", action: "비밀번호 변경", time: "1시간 전" },
+  { id: "act-4", user: "최수아", action: "프로필 수정", time: "2시간 전" },
+  { id: "act-5", user: "정도윤", action: "로그인", time: "3시간 전" },
 ]
 
 export default async function DashboardPage() {
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {card.title}
               </CardTitle>
-              <card.icon className="h-4 w-4 text-muted-foreground" />
+              <card.icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{card.value}</p>
@@ -101,9 +101,9 @@ export default async function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentActivities.map((activity, index) => (
+            {recentActivities.map((activity) => (
               <div
-                key={index}
+                key={activity.id}
                 className="flex items-center justify-between text-sm"
               >
                 <div className="flex items-center gap-3">

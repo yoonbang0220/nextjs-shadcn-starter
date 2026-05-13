@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { LayoutDashboard, Users, Settings, BarChart3, FileText } from "lucide-react"
+import { NavItem } from "@/components/common/NavItem"
 
 const sidebarItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "개요" },
@@ -23,14 +23,7 @@ export default function DashboardLayout({
             메뉴
           </p>
           {sidebarItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-foreground/70 hover:text-foreground hover:bg-muted transition-colors"
-            >
-              <item.icon className="h-4 w-4 shrink-0" />
-              {item.label}
-            </Link>
+            <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} />
           ))}
         </nav>
       </aside>

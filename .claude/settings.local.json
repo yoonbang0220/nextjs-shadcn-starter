@@ -16,7 +16,18 @@
       "PowerShell(Get-Item .claude/commands/commit.md | Select-Object Length, Name; \"---\"; Get-Content .claude/commands/commit.md -Raw)",
       "PowerShell($f = Get-Item .claude/commands/commit.md; Write-Output \"Size: $\\($f.Length\\) bytes\")",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git *)",
+      "Bash(npm run *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" run dev)",
+      "PowerShell($env:PATH = \"C:\\\\Program Files\\\\nodejs;$env:PATH\"; & \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" run dev)",
+      "Bash(bash \"E:/claude/nextjs-shadcn-starter/nextjs-shadcn-starter/.claude/statusline-command.sh\")",
+      "Bash(where node *)"
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"E:\\claude\\nextjs-shadcn-starter\\nextjs-shadcn-starter\\.claude\\statusline-command.ps1\""
+  },
+  "outputStyle": "Teacher"
 }

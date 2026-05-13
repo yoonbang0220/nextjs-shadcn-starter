@@ -24,11 +24,13 @@ export default function LoginPage() {
           <CardTitle className="text-2xl font-bold">로그인</CardTitle>
           <CardDescription>이메일과 비밀번호를 입력하세요</CardDescription>
         </CardHeader>
+        <form>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">이메일</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
             />
@@ -37,7 +39,7 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <Label htmlFor="password">비밀번호</Label>
               <Link
-                href="#"
+                href="/forgot-password"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
                 비밀번호 찾기
@@ -45,13 +47,14 @@ export default function LoginPage() {
             </div>
             <Input
               id="password"
+              name="password"
               type="password"
               placeholder="••••••••"
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          <Button className="w-full">로그인</Button>
+          <Button type="submit" className="w-full">로그인</Button>
           <p className="text-sm text-center text-muted-foreground">
             계정이 없으신가요?{" "}
             <Link href="/signup" className="text-primary hover:underline font-medium">
@@ -59,6 +62,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </CardFooter>
+        </form>
       </Card>
     </div>
   )
