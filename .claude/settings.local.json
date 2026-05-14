@@ -22,7 +22,9 @@
       "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" run dev)",
       "PowerShell($env:PATH = \"C:\\\\Program Files\\\\nodejs;$env:PATH\"; & \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" run dev)",
       "Bash(bash \"E:/claude/nextjs-shadcn-starter/nextjs-shadcn-starter/.claude/statusline-command.sh\")",
-      "Bash(where node *)"
+      "Bash(where node *)",
+      "Bash(npx eslint *)",
+      "Bash(npm --version)"
     ]
   },
   "statusLine": {
