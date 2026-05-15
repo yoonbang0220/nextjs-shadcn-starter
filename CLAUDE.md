@@ -41,10 +41,10 @@ npx shadcn@latest add <component> # shadcn/ui 컴포넌트 추가
 app/                   # 페이지 및 레이아웃 (App Router)
 components/
   ui/                  # shadcn/ui 컴포넌트 (직접 수정 최소화)
-  common/              # 프로젝트 공통 컴포넌트 (Header, Footer, ThemeProvider, ThemeToggle)
+  common/              # 프로젝트 공통 컴포넌트 (Header, Footer, ThemeProvider, ThemeToggle, NavItem)
 hooks/                 # 커스텀 훅
 lib/utils.ts           # cn() 유틸리티 (clsx + tailwind-merge)
-types/index.ts         # 공통 TypeScript 타입 (User, ApiResponse, PaginatedResponse)
+types/index.ts         # 공통 TypeScript 타입 (User, ApiResponse, PaginatedResponse, ThemeMode)
 ```
 
 **레이아웃 계층:**
@@ -58,11 +58,20 @@ RootLayout (ThemeProvider)
   └── Toaster
 ```
 
-대시보드(`app/dashboard/layout.tsx`)는 루트 레이아웃 안에 중첩된다. 즉 Header/Footer는 대시보드에도 그대로 유지되며, DashboardLayout은 사이드바와 콘텐츠 영역만 추가로 정의한다.
+대시보드(`app/dashboard/layout.tsx`)는 루트 레이아웃 안에 중첩된다. Header/Footer는 대시보드에도 그대로 유지되며, DashboardLayout은 사이드바와 콘텐츠 영역만 추가로 정의한다.
+
+**현재 구현된 페이지:**
+- `/` — 홈
+- `/login`, `/signup` — 인증 페이지
+- `/dashboard` — 대시보드 메인
+
+**사이드바에 정의됐지만 아직 미구현인 페이지:** `/dashboard/analytics`, `/dashboard/users`, `/dashboard/posts`, `/dashboard/settings`
 
 ## 주요 패턴
 
-**컴포넌트 변형 관리** — `class-variance-authority`(CVA)로 `variant` / `size` prop 처리. `button.tsx` 참고.
+**컴포넌트 변형 관리** — `class-variance-authority`(CVA)로 `variant` / `size` prop 처리. `button.tsx` 참고. `@base-ui/react`의 primitive를 감싸는 패턴 사용 (`ButtonPrimitive.Props` 확장).
+
+**사이드바 활성 상태** — `NavItem` 컴포넌트(`components/common/NavItem.tsx`)가 `usePathname()`으로 현재 경로를 감지해 활성 스타일을 자동 적용. 대시보드 사이드바 항목 추가 시 이 컴포넌트 재사용.
 
 **cn() 유틸리티** — 모든 className 병합은 `cn()` 사용 (Tailwind 클래스 충돌 해결).
 
