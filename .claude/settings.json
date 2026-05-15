@@ -1,4 +1,8 @@
 {
+  "statusLine": {
+    "type": "command",
+    "command": "bash -c 'if [ \"$OS\" = \"Windows_NT\" ]; then powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/statusline-command.ps1\"; else bash \"$CLAUDE_PROJECT_DIR/.claude/statusline-command.sh\"; fi'"
+  },
   "hooks": {
     "PreToolUse": [
       {
