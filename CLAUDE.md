@@ -1,117 +1,99 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+이 저장소에서 Claude Code(claude.ai/code)가 작업할 때 따라야 할 지침이다.
 
 @AGENTS.md
 
-## 언어 및 커뮤니케이션 규칙
+## 언어 규칙
 
-- **기본 응답 언어**: 한국어
-- **코드 주석**: 한국어로 작성
-- **커밋 메시지**: 한국어로 작성
-- **문서화**: 한국어로 작성
-- **변수명/함수명**: 영어 (코드 표준 준수)
+- **응답·주석·커밋 메시지·문서**: 한국어
+- **변수명·함수명**: 영어 (코드 표준 준수)
 
 ## 명령어
 
 ```bash
-npm run dev      # 개발 서버 실행 (Next.js 16 기본 번들러: Turbopack)
+npm run dev      # 개발 서버 (Next.js 16 / Turbopack 기본)
 npm run build    # 프로덕션 빌드
-npm run start    # 프로덕션 서버 실행
-npm run lint     # ESLint 실행
-npx prettier --write .            # 전체 파일 포맷팅
+npm run start    # 프로덕션 서버
+npm run lint     # ESLint
+npx prettier --write .            # 전체 포맷팅
 npx shadcn@latest add <component> # shadcn/ui 컴포넌트 추가
 ```
 
-테스트 설정 없음 — 필요 시 직접 구성해야 한다.
+테스트 러너 미설정.
 
-## 기술 스택
+## 기술 스택 & ⚠️ 함정 노트
 
-- **Next.js 16** (App Router, Turbopack 기본 활성화, `"use cache"` 지시자)
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS v4** — `tailwind.config.ts` 없음, `app/globals.css`에서 `@theme` 블록으로 토큰 정의
-- **shadcn/ui** (`base-nova` 스타일) — **Radix UI가 아닌 `@base-ui/react` 기반 headless 프리미티브**. 컴포넌트 API가 기존 shadcn과 다를 수 있으므로 각 컴포넌트의 실제 props를 반드시 확인할 것.
-- **next-themes** — ThemeProvider, `suppressHydrationWarning` 필수
-- **sonner** — Toast 알림 (`<Toaster>`는 루트 레이아웃에 이미 포함됨)
+- **Next.js 16.2.4** (App Router)
+  - `params` / `searchParams`는 **`Promise` 타입** → 반드시 `await`.
+  - `next.config.ts`에서 `cacheComponents: true` 활성화 → 서버 컴포넌트 내 비동기 함수에 `"use cache"` 지시자 사용 가능.
+  - `middleware.ts`는 지원되나 향후 `proxy.ts`로 마이그레이션될 수 있음.
+- **React 19.2.4**
+- **TypeScript 5** (`strict: true`)
+- **Tailwind CSS v4** — `tailwind.config.ts` 없음. 토큰은 `app/globals.css`의 `@theme inline` 블록에서 정의. `@import "shadcn/tailwind.css"` 포함.
+- **shadcn/ui (`base-nova` 스타일)** — ⚠️ **Radix UI가 아닌 `@base-ui/react` 기반.** 컴포넌트 API가 기존 shadcn과 다르므로 props는 항상 실제 파일에서 확인.
+- **next-themes** — `ThemeProvider`, 루트 `<html>`에 `suppressHydrationWarning` 필수.
+- **sonner** — `<Toaster>`는 루트 레이아웃(`app/layout.tsx`)에 이미 포함됨. 페이지별 재선언 금지.
+- **lucide-react** — 아이콘.
 
 ## 아키텍처
 
 ```
-app/                   # 페이지 및 레이아웃 (App Router)
+app/                # 페이지·레이아웃 (App Router)
 components/
-  ui/                  # shadcn/ui 컴포넌트 (직접 수정 최소화)
-  common/              # 프로젝트 공통 컴포넌트 (Header, Footer, ThemeProvider, ThemeToggle, NavItem)
-hooks/                 # 커스텀 훅
-lib/utils.ts           # cn() 유틸리티 (clsx + tailwind-merge)
-types/index.ts         # 공통 TypeScript 타입 (User, ApiResponse, PaginatedResponse, ThemeMode)
+  ui/               # shadcn/ui 컴포넌트 (직접 수정 최소화)
+  common/           # 프로젝트 공통 (Header, Footer, ThemeProvider, ThemeToggle, NavItem)
+hooks/              # 커스텀 훅 (use-media-query 등)
+lib/utils.ts        # cn() — clsx + tailwind-merge
+types/index.ts      # 공통 타입 (User, ApiResponse, PaginatedResponse, ThemeMode)
 ```
 
-**레이아웃 계층:**
+**레이아웃 계층**
 ```
-RootLayout (ThemeProvider)
-  └── Header
-  └── <main>
-        └── [페이지 콘텐츠]
-        └── DashboardLayout (사이드바 + 콘텐츠) ← /dashboard 하위
-  └── Footer
-  └── Toaster
+RootLayout (ThemeProvider · Header · main · Footer · Toaster)
+  └── DashboardLayout (사이드바 + 콘텐츠)  ← /dashboard 하위에만 중첩
 ```
 
-대시보드(`app/dashboard/layout.tsx`)는 루트 레이아웃 안에 중첩된다. Header/Footer는 대시보드에도 그대로 유지되며, DashboardLayout은 사이드바와 콘텐츠 영역만 추가로 정의한다.
+대시보드는 루트 레이아웃 안에 중첩된다. Header/Footer는 유지되고 사이드바·콘텐츠 영역만 추가된다.
 
-**현재 구현된 페이지:**
-- `/` — 홈
-- `/login`, `/signup` — 인증 페이지
-- `/dashboard` — 대시보드 메인
-
-**사이드바에 정의됐지만 아직 미구현인 페이지:** `/dashboard/analytics`, `/dashboard/users`, `/dashboard/posts`, `/dashboard/settings`
+**페이지 현황**: 구현 — `/`, `/login`, `/signup`, `/dashboard`, `not-found`. 사이드바(`app/dashboard/layout.tsx`)에 링크만 정의된 미구현 라우트(`analytics`, `users`, `posts`, `settings`)가 있다.
 
 ## 주요 패턴
 
-**컴포넌트 변형 관리** — `class-variance-authority`(CVA)로 `variant` / `size` prop 처리. `button.tsx` 참고. `@base-ui/react`의 primitive를 감싸는 패턴 사용 (`ButtonPrimitive.Props` 확장).
-
-**사이드바 활성 상태** — `NavItem` 컴포넌트(`components/common/NavItem.tsx`)가 `usePathname()`으로 현재 경로를 감지해 활성 스타일을 자동 적용. 대시보드 사이드바 항목 추가 시 이 컴포넌트 재사용.
-
-**cn() 유틸리티** — 모든 className 병합은 `cn()` 사용 (Tailwind 클래스 충돌 해결).
-
-**클라이언트 컴포넌트** — 브라우저 API나 훅이 필요한 경우에만 `"use client"` 선언 (ThemeToggle, ThemeProvider, `use-media-query.ts` 등).
-
-**서버 함수 캐싱** — 서버 컴포넌트 내 비동기 함수에 `"use cache"` 지시자 사용 가능 (`next.config.ts`에서 `cacheComponents: true` 활성화됨).
-
-**비동기 params** — Next.js 16에서 `params`와 `searchParams`는 `Promise` 타입이므로 반드시 `await` 필요.
-
-**미들웨어** — Next.js 16에서 `middleware.ts`는 여전히 지원되나, `proxy.ts`로 마이그레이션될 수 있음. 새로 작성 시 공식 문서 확인 필요.
+- **컴포넌트 변형** — `class-variance-authority`(CVA)로 `variant`/`size`. `components/ui/button.tsx`가 레퍼런스. `@base-ui/react` primitive를 감싸며 `ButtonPrimitive.Props`를 확장한다.
+- **사이드바 활성 상태** — `components/common/NavItem.tsx`가 `usePathname()`으로 현재 경로 감지해 자동 스타일링. 신규 사이드바 항목은 이 컴포넌트 재사용.
+- **className 병합** — 무조건 `cn()`. Tailwind 충돌 해결.
+- **클라이언트 컴포넌트** — 브라우저 API·훅이 필요할 때만 `"use client"`.
 
 ## 스타일링
 
-- 색상 토큰은 `app/globals.css`의 CSS 변수(`--background`, `--primary` 등)로 정의, **oklch** 색상 공간 사용
-- 다크모드: `.dark` 클래스 전환 방식 (`@custom-variant dark (&:is(.dark *))`)
-- 테마 색상 변경 시 `globals.css`의 `:root` / `.dark` 블록 수정
-- Prettier + `prettier-plugin-tailwindcss`로 클래스 자동 정렬됨
+- 색상 토큰: `app/globals.css`의 CSS 변수(`--background`, `--primary` 등). **oklch** 색공간.
+- 다크모드: `.dark` 클래스 토글 — `@custom-variant dark (&:is(.dark *))`.
+- 테마 색 변경 → `globals.css`의 `:root` / `.dark` 블록.
+- 클래스 정렬: `prettier-plugin-tailwindcss` 자동.
 
-## 환경 변수
+## 환경 변수 & 경로
 
-- `.env.local` 파일에 실제 값 설정 (`.env.example` 참고)
-- 클라이언트에서 접근 가능한 변수는 반드시 `NEXT_PUBLIC_` 접두사 사용
+- `.env.local`에 실제 값 (`.env.example` 참고). 클라이언트 노출 변수는 `NEXT_PUBLIC_` 접두사 필수.
+- 경로 alias: `@/*` → 프로젝트 루트 (`tsconfig.json`).
 
-## 경로 alias
+## 프로젝트 컨텍스트 문서
 
-`@/*` → 프로젝트 루트 (`tsconfig.json` 설정)
+- `PRODUCT_SPEC.md` — 제품 사양서. 기능·요구사항 추적의 단일 출처. 새 기능 추가 시 먼저 참고.
+- `BUG_REPORT.md` — 알려진 버그·이슈 누적 기록.
+- `README.md` — 외부 독자용 스타터킷 소개.
 
 ## Claude Code 통합 환경
 
-이 저장소에는 Claude Code용 보조 자산이 함께 있다.
+저장소 동봉 자산:
 
-- `.claude/agents/` — 서브에이전트 정의 (`code-reviewer-kr`, `qa-engineer`, `reverse-planner`)
-- `.claude/commands/git/` — `/git:commit`, `/git:explain` 같은 커스텀 슬래시 명령
-- `.claude/settings.json` — 프로젝트 공유 Hook 설정 (현재 Bash PreToolUse 테스트 훅 등록됨)
-- `.claude/slack-notify.{sh,ps1}` — 권한 요청 / 작업 완료 / 서브에이전트 이벤트를 Slack에 전달하는 cross-platform 스크립트
-- `docs/HOOKS_PLANNING.md` — 위 Slack 알림 시스템의 설계/이슈/로드맵 기획서 (변경 시 참조 필수)
+- `.claude/agents/` — 서브에이전트 정의 (`code-reviewer-kr`, `qa-engineer`, `reverse-planner`).
+- `.claude/agent-memory/<agent>/` — 서브에이전트별 메모리 저장소.
+- `.claude/commands/git/` — 커스텀 슬래시 명령 (`/git:commit`, `/git:explain`).
+- `.claude/output-styles/beginner.md` — 초보자용 출력 스타일.
+- `.claude/settings.json` — 프로젝트 공유 Hook 설정 (현재 Bash PreToolUse 테스트 훅 → `hook-test.txt`에 로그 append).
+- `.claude/slack-notify.ps1` — Windows PowerShell. 권한 요청 / 작업 완료 / 서브에이전트 이벤트를 Slack에 전달. UTF-8 BOM 인코딩 사용(한글 깨짐 방지).
+- `.mcp.json` — MCP 서버 설정. `context7`(라이브러리 문서 조회), `sequential-thinking`(단계적 사고) 등록.
+- `docs/HOOKS_PLANNING.md` — Slack 알림 시스템 설계·이슈·로드맵 기획서. **Slack/Hook 관련 변경 시 반드시 참조**.
 
-`.claude/settings.local.json`은 `.gitignore`에 있다. Claude Code가 자동 추가하는 permission 룰에 webhook URL 같은 민감값이 섞일 수 있어 의도적으로 untrack 처리되어 있다.
-
-## 저장소 내 임시 부산물
-
-- `hook-test.txt` — `.claude/settings.json`의 PreToolUse 훅이 Bash 실행 시마다 한 줄씩 append하는 로그. `.gitignore`에 있어 무방. 정리하고 싶으면 그냥 삭제.
-- `roots/test.txt` — Hook 시스템 초기 테스트 중 생성된 실험 파일. 정리 가능.
+`.claude/settings.local.json`은 `.gitignore` 처리. Claude Code가 자동 추가하는 permission 룰에 webhook URL 같은 민감값이 섞일 수 있어 의도적으로 untrack.
