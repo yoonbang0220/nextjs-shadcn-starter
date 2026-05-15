@@ -1,4 +1,4 @@
-$input_data = $input | Out-String
+﻿$input_data = $input | Out-String
 try { $json = $input_data | ConvertFrom-Json } catch { exit 0 }
 
 $ESC  = [char]27
