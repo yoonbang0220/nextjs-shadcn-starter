@@ -98,3 +98,20 @@ RootLayout (ThemeProvider)
 ## 경로 alias
 
 `@/*` → 프로젝트 루트 (`tsconfig.json` 설정)
+
+## Claude Code 통합 환경
+
+이 저장소에는 Claude Code용 보조 자산이 함께 있다.
+
+- `.claude/agents/` — 서브에이전트 정의 (`code-reviewer-kr`, `qa-engineer`, `reverse-planner`)
+- `.claude/commands/git/` — `/git:commit`, `/git:explain` 같은 커스텀 슬래시 명령
+- `.claude/settings.json` — 프로젝트 공유 Hook 설정 (현재 Bash PreToolUse 테스트 훅 등록됨)
+- `.claude/slack-notify.{sh,ps1}` — 권한 요청 / 작업 완료 / 서브에이전트 이벤트를 Slack에 전달하는 cross-platform 스크립트
+- `docs/HOOKS_PLANNING.md` — 위 Slack 알림 시스템의 설계/이슈/로드맵 기획서 (변경 시 참조 필수)
+
+`.claude/settings.local.json`은 `.gitignore`에 있다. Claude Code가 자동 추가하는 permission 룰에 webhook URL 같은 민감값이 섞일 수 있어 의도적으로 untrack 처리되어 있다.
+
+## 저장소 내 임시 부산물
+
+- `hook-test.txt` — `.claude/settings.json`의 PreToolUse 훅이 Bash 실행 시마다 한 줄씩 append하는 로그. `.gitignore`에 있어 무방. 정리하고 싶으면 그냥 삭제.
+- `roots/test.txt` — Hook 시스템 초기 테스트 중 생성된 실험 파일. 정리 가능.
