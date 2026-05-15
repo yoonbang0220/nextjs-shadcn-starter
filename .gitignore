@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code 로컬 설정 (개인 webhook URL, 토큰 등 보호)
+.claude/settings.local.json
+
+# Claude Code Hook 테스트 부산물
+hook-test.txt

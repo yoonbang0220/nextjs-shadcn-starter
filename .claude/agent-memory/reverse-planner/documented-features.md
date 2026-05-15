@@ -10,6 +10,7 @@ metadata:
 | 기능명 | 기획서 파일 경로 | 작성일 |
 |--------|----------------|--------|
 | 전체 프로젝트 역기획서 | /PRODUCT_SPEC.md | 2026-05-14 |
+| Claude Code Hooks + Slack 알림 시스템 | /docs/HOOKS_PLANNING.md | 2026-05-15 |
 
 ## 문서화 범위 (PRODUCT_SPEC.md)
 
@@ -30,3 +31,11 @@ metadata:
 **How to apply:** 개별 기능 기획서 추가 시 이 목록에 항목을 추가하여 추적할 것
 
 관련 메모리: [[project-starterkit]], [[tech-terms-korean]]
+
+## HOOKS_PLANNING.md 요약 (2026-05-15)
+
+Claude Code Hooks와 Slack Webhook을 연결하는 자동화 알림 시스템 기획서.
+- 이벤트 5종: permission, stop, subagent_start, subagent_running, subagent_stop
+- 마커 파일 패턴으로 메인/서브에이전트 구분 (스팸 방지 핵심 설계)
+- macOS(bash+python3) + Windows(PowerShell) 크로스플랫폼 지원
+- BUG-001 수정 완료, BUG-002/003 보류, Rate Limit 미구현 상태
